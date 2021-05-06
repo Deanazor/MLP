@@ -9,3 +9,13 @@ class CategoricalCrossEntropy():
     def calc_loss(self, preds, actual):
         losses = self.forward(preds, actual)
         return np.mean(losses)
+
+    def backward(self, dinputs, actual):
+        samples = len(dinputs)
+        labels = len(dinputs[0])
+
+        if len(actual.shape == 1):
+            actual = np.eye(labels)[actual]
+        
+        self.dinputs = -actual/dinputs
+        self.dinputs = self.dinputs / samples
