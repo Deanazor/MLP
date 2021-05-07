@@ -1,20 +1,19 @@
-from activations import softmax
 import numpy as np
 from activations import softmax
 from losses import CategoricalCrossEntropy
 
 class Dense():
-    def __init__(self, ins, outs):
+    def __init__(self, ins:int, outs:int):
         self.ins = ins
         self.outs = outs
         self.weights = np.random.uniform(-1, 1, (ins, outs))
         self.bias = np.zeros((1, outs))
     
-    def forward(self, inputs):
+    def forward(self, inputs:np.ndarray):
         self.inputs = inputs
         self.outputs = np.dot(inputs, self.weights) + self.bias
     
-    def backward(self, dinputs):
+    def backward(self, dinputs:np.ndarray):
         self.dweights = np.dot(self.inputs.T, dinputs)
         self.dbias = np.sum(dinputs, axis=0, keepdims=True)
         self.dinputs =  np.dot(dinputs, self.weights.T)
@@ -24,12 +23,12 @@ class Output():
         self.activation = softmax()
         self.loss = CategoricalCrossEntropy()
 
-    def forward(self, inputs, actual):
+    def forward(self, inputs:np.ndarray, actual:np.ndarray):
         self.activation.forward(inputs)
         self.outputs = self.activation.outputs
         return self.loss.calc_loss(self.outputs, actual)
     
-    def backward(self, dinputs, actual):
+    def backward(self, dinputs:np.ndarray, actual:np.ndarray):
         samples = len(dinputs)
 
         if len(actual.shape) == 2:
