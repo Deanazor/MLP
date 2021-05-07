@@ -1,16 +1,12 @@
-from layers import Dense
-from activations import relu
 import numpy as np
+from models import MLP
+from datasets import create_spiral_data, one_hot_encode
 
 np.random.seed(69)
 
-X = [[1.5, 2, 3.7],
-     [4.3, 5, 2.1],
-     [8, 3.2, 5.6]]
+X,y = create_spiral_data(samples=100, classes=2)
+y = one_hot_encode(y)
 
-layer = Dense(3, 3)
-activation = relu()
-layer.forward(X)
-activation.forward(layer.outputs)
-print(activation.outputs)
+model = MLP(2, 2, lr=0.1)
 
+model.train(X, y, epochs=100)

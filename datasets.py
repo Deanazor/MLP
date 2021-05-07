@@ -12,3 +12,11 @@ def create_spiral_data(samples = 10, classes=2, dimension=2):
         y[ix] = i
     
     return X, y
+
+def one_hot_encode(y):
+    samples = len(y)
+    n_classes = len(np.unique(y))
+    categorical = np.zeros((samples,n_classes))
+    for i, label in enumerate(y):
+        categorical[i, label] = 1
+    return categorical

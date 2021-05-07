@@ -1,6 +1,6 @@
 import numpy as np
 
-class sigmoid():
+class sigmoid:
     def forward(self, inputs:np.ndarray):
         self.inputs = inputs
         self.outputs =  1 / (1 + np.exp(-inputs))
@@ -8,7 +8,7 @@ class sigmoid():
     def backward(self, dinputs:np.ndarray):
         self.dinputs = dinputs * (1 - self.outputs) * self.outputs
 
-class relu():    
+class relu:    
     def forward(self, inputs:np.ndarray):
         self.inputs = inputs
         self.outputs = np.maximum(0, inputs)
@@ -17,7 +17,7 @@ class relu():
         self.dinputs = dinputs.copy()
         self.dinputs[self.inputs <= 0] = 0
 
-class softmax():
+class softmax:
     def forward(self, inputs:np.ndarray):
         self.inputs = inputs
         exp_vals = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))

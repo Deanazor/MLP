@@ -2,7 +2,7 @@ import numpy as np
 from activations import softmax
 from losses import CategoricalCrossEntropy
 
-class Dense():
+class Dense:
     def __init__(self, ins:int, outs:int):
         self.ins = ins
         self.outs = outs
@@ -18,7 +18,7 @@ class Dense():
         self.dbias = np.sum(dinputs, axis=0, keepdims=True)
         self.dinputs =  np.dot(dinputs, self.weights.T)
 
-class Output():
+class Output:
     def __init__(self):
         self.activation = softmax()
         self.loss = CategoricalCrossEntropy()

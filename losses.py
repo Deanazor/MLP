@@ -1,9 +1,15 @@
 import numpy as np
 
-class CategoricalCrossEntropy():
+class CategoricalCrossEntropy:
     def forward(self, preds:np.ndarray, actual:np.ndarray):
         preds_clipped = np.clip(preds, 1e-7, 1 - 1e-7)
-        confidence = np.sum(preds_clipped*actual, axis=1)
+        samples = len(preds)
+        if len(actual.shape) == 1:
+            confidence = preds_clipped[range(samples),actual]
+        
+        elif len(actual.shape) == 2:
+            confidence = np.sum(preds_clipped * actual, axis=1)
+
         return -np.log(confidence)
     
     def calc_loss(self, preds:np.ndarray, actual:np.ndarray):
