@@ -2,7 +2,13 @@ from layers import Dense
 from activations import relu, softmax
 import numpy as np
 
-class MLP:
+class Model:    
+    def compile(self, optimizer, loss):
+        self.optimizer = optimizer
+        self.loss = loss
+        self.compiled = True
+
+class MLP(Model):
     def __init__(self, input_shape, output_shape):
         self.dense1 = Dense(input_shape, 128)
         self.activation1 = relu()
@@ -11,11 +17,6 @@ class MLP:
         self.dense3 = Dense(64, output_shape)
         self.activation3 = softmax()
         self.compiled = False
-    
-    def compile(self, optimizer, loss):
-        self.optimizer = optimizer
-        self.loss = loss
-        self.compiled = True
 
     def forward(self, X):
         self.dense1.forward(X)
@@ -42,7 +43,7 @@ class MLP:
         self.optimizer.update_params(self.dense1)
         self.optimizer.update_params(self.dense2)
         self.optimizer.update_params(self.dense3)
-
+    
     def train(self, X, y, epochs=10):
         if not self.compiled:
             raise RuntimeError("Model is not compiled")
@@ -62,3 +63,5 @@ class MLP:
             # Back Propagation / Backward pass
             self.backward(y)
             self.optimize()
+
+    
