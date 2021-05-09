@@ -1,19 +1,23 @@
-from layers import Dense, Output
-from activations import relu
-from optimizers import SGD
+from layers import Dense
+from activations import relu, softmax
 import numpy as np
 
-class MLP():
-    def __init__(self, input_size, output_size, lr=1e-3, momentum=0):
-        self.dense1 = Dense(input_size, 128)
+class MLP:
+    def __init__(self, input_shape, output_shape):
+        self.dense1 = Dense(input_shape, 128)
         self.activation1 = relu()
         self.dense2 = Dense(128,64)
         self.activation2 = relu()
-        self.dense3 = Dense(64, output_size)
-        self.activation3 = Output()
-        self.optimizer = SGD(lr = lr, momentum=momentum)
+        self.dense3 = Dense(64, output_shape)
+        self.activation3 = softmax()
+        self.compiled = False
+    
+    def compile(self, optimizer, loss):
+        self.optimizer = optimizer
+        self.loss = loss
+        self.compiled = True
 
-    def forward(self, X, y):
+    def forward(self, X):
         self.dense1.forward(X)
         self.activation1.forward(self.dense1.outputs)
 
@@ -21,11 +25,11 @@ class MLP():
         self.activation2.forward(self.dense2.outputs)
 
         self.dense3.forward(self.activation2.outputs)
-        loss = self.activation3.forward(self.dense3.outputs, y)
-        return loss
+        self.activation3.forward(self.dense3.outputs)
     
     def backward(self, y):
-        self.activation3.backward(self.activation3.outputs, y)
+        self.loss.backward(self.activation3.outputs, y)
+        self.activation3.backward(self.loss.dinputs)
         self.dense3.backward(self.activation3.dinputs)
         
         self.activation2.backwards(self.dense3.dinputs)
@@ -40,9 +44,13 @@ class MLP():
         self.optimizer.update_params(self.dense3)
 
     def train(self, X, y, epochs=10):
+        if not self.compiled:
+            raise RuntimeError("Model is not compiled")
+            
         for i in range(epochs):
             # Forward Propagation / Feed Forward
-            loss = self.forward(X, y)
+            self.forward(X)
+            loss = self.loss.calc_loss(self.activation3.outputs, y)
 
             preds = np.argmax(self.activation3.outputs, axis=1)
             if len(y.shape) == 2:
@@ -54,4 +62,3 @@ class MLP():
             # Back Propagation / Backward pass
             self.backward(y)
             self.optimize()
-

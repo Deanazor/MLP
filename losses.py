@@ -20,7 +20,7 @@ class CategoricalCrossEntropy:
         samples = len(dinputs)
         labels = len(dinputs[0])
 
-        if len(actual.shape == 1):
+        if len(actual.shape) == 1:
             actual = np.eye(labels)[actual]
         
         self.dinputs = -actual/dinputs
