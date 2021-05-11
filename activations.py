@@ -11,9 +11,9 @@ class sigmoid:
 class relu:    
     def forward(self, inputs:np.ndarray):
         self.inputs = inputs
-        self.outputs = np.maximum(0, inputs)
+        self.outputs = np.maximum(0.1, inputs)
     
-    def backwards(self, dinputs:np.ndarray):
+    def backward(self, dinputs:np.ndarray):
         self.dinputs = dinputs.copy()
         self.dinputs[self.inputs <= 0] = 0
 

@@ -1,4 +1,5 @@
 import numpy as np
+# np.seterr(divide='ignore', invalid='ignore')
 
 class CategoricalCrossEntropy:
     def forward(self, preds:np.ndarray, actual:np.ndarray):
@@ -22,6 +23,6 @@ class CategoricalCrossEntropy:
 
         if len(actual.shape) == 1:
             actual = np.eye(labels)[actual]
-        
+        # print(dinputs)
         self.dinputs = -actual/dinputs
         self.dinputs = self.dinputs / samples
