@@ -34,8 +34,9 @@ class MLP():
         self.optimizer.update_params(self.dense1)
         self.optimizer.update_params(self.dense2)
     
-    def train(self, X, y, epochs=10):
-            
+    def train(self, X, y, epochs=10, return_logs=False):
+        logs = {"loss" : [],
+                "acc" : []}
         for i in range(epochs):
             # Forward Propagation / Feed Forward
             self.forward(X)
@@ -46,10 +47,15 @@ class MLP():
                 y = np.argmax(y, axis=1)
             accuracy = np.mean(preds == y)
 
+            logs['loss'].append(loss)
+            logs['acc'].append(accuracy)
             print("epoch {}/{}: loss: {}; acc: {}".format(i+1, epochs, loss, accuracy))
 
             # Back Propagation / Backward pass
             self.backward(y)
             self.optimize()
+        
+        if return_logs:
+            return logs
 
     
