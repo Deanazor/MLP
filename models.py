@@ -2,6 +2,7 @@ from optimizers import SGD
 from layers import Dense, Output
 from activations import relu, softmax
 import numpy as np
+from metric import accuracy
 
 class Model:    
     def compile(self, optimizer, loss):
@@ -10,12 +11,12 @@ class Model:
         self.compiled = True
 
 class MLP():
-    def __init__(self, input_shape, output_shape):
+    def __init__(self, input_shape, output_shape, learning_rate=0.1):
         self.dense1 = Dense(input_shape, 2)
         self.activation1 = relu()
         self.dense2 = Dense(2, output_shape)
         self.activation2 = Output()
-        self.optimizer = SGD(lr=0.1, momentum=0.1)
+        self.optimizer = SGD(lr=learning_rate)
 
     def forward(self, X):
         self.dense1.forward(X)
@@ -45,11 +46,11 @@ class MLP():
             preds = np.argmax(self.activation2.outputs, axis=1)
             if len(y.shape) == 2:
                 y = np.argmax(y, axis=1)
-            accuracy = np.mean(preds == y)
+            acc = accuracy(y, preds)
 
             logs['loss'].append(loss)
-            logs['acc'].append(accuracy)
-            print("epoch {}/{}: loss: {}; acc: {}".format(i+1, epochs, loss, accuracy))
+            logs['acc'].append(acc)
+            print("epoch {}/{}: loss: {}; acc: {}".format(i+1, epochs, loss, acc))
 
             # Back Propagation / Backward pass
             self.backward(y)
@@ -58,4 +59,9 @@ class MLP():
         if return_logs:
             return logs
 
+    def predict(self, X):
+        self.forward(X)
+        self.activation2.forward(self.dense2.outputs)
+        prediction = np.argmax(self.activation2.outputs, axis=1)
+        return prediction
     

@@ -2,19 +2,6 @@ import numpy as np
 import os, random
 import cv2
 
-def create_spiral_data(samples = 10, classes=2, dimension=2):
-    X = np.zeros((samples*classes, dimension))
-    y = np.zeros(samples*classes, dtype='uint8')
-
-    for i in range(classes):
-        ix = range(samples*i, samples*(i+1))
-        r = np.linspace(0,1,samples)
-        theta = np.linspace(i*4, (i+1)*4, samples) + np.random.rand(samples) * 0.2
-        X[ix] = np.c_[r*np.cos(theta), r*np.sin(theta)]
-        y[ix] = i
-    
-    return X, y
-
 def one_hot_encode(y):
     samples = len(y)
     n_classes = len(np.unique(y))
@@ -31,13 +18,13 @@ def grayscale(img):
     gray_img = np.dot(img, bgr_weights)
     return np.array(gray_img)
 
-def process(full_data, target_size=None):
+def split_data_label(full_data, target_size=None):
     random.shuffle(full_data)
-    data = []
-    label = []
-    for img, cls in full_data:
-        data.append(img)
-        label.append(cls)
+    data = [x for x, _ in full_data]
+    label = [y for _, y in full_data]
+    # for img, cls in full_data:
+    #     data.append(img)
+    #     label.append(cls)
     
     width, height = target_size
     data = np.array(data).reshape(-1, height, width)
@@ -69,10 +56,10 @@ def load_from_folder(folder, test_split=0, target_size=None):
         else :
             train_images += images
     
-    train_data, train_label = process(train_images, target_size)
+    train_data, train_label = split_data_label(train_images, target_size)
     # train_data = train_data.reshape(-1, height, width)
     if test_split:
-        test_data, test_label = process(test_images, target_size)
+        test_data, test_label = split_data_label(test_images, target_size)
         # test_data = test_data.reshape(-1, height, width)
         return (train_data, train_label), (test_data, test_label)
     return (train_data, train_label)

@@ -23,10 +23,11 @@ class Output:
         self.activation = softmax()
         self.loss = CategoricalCrossEntropy()
 
-    def forward(self, inputs:np.ndarray, actual:np.ndarray):
+    def forward(self, inputs:np.ndarray, actual:np.ndarray = None):
         self.activation.forward(inputs)
         self.outputs = self.activation.outputs
-        return self.loss.calc_loss(self.outputs, actual)
+        if actual is not None:
+            return self.loss.calc_loss(self.outputs, actual)
     
     def backward(self, dinputs:np.ndarray, actual:np.ndarray):
         samples = len(dinputs)
