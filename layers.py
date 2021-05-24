@@ -6,7 +6,7 @@ class Dense:
     def __init__(self, ins:int, outs:int):
         self.ins = ins
         self.outs = outs
-        self.weights = np.random.uniform(-1, 1, (ins, outs))
+        self.weights = np.random.randn(ins, outs) * 0.01
         self.bias = np.zeros((1, outs))
     
     def forward(self, inputs:np.ndarray):
