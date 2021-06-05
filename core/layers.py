@@ -1,6 +1,6 @@
 import numpy as np
-from activations import softmax
-from losses import CategoricalCrossEntropy
+from .activations import softmax
+from .losses import CategoricalCrossEntropy
 
 class Dense:
     def __init__(self, ins:int, outs:int):
