@@ -3,40 +3,25 @@ from .layers import Dense
 from .activations import relu, sigmoid
 from .metric import accuracy
 
-class Model:    
+class Model:   
+    def __init__(self):
+        self.activation2 = sigmoid()
+        self.compiled = False
+         
     def compile(self, optimizer, loss):
         self.optimizer = optimizer
         self.loss = loss
         self.compiled = True
     
-
-class MLP(Model):
-    def __init__(self, input_shape, output_shape,):
-        self.dense1 = Dense(input_shape, 4)
-        self.activation1 = relu()
-        self.dense2 = Dense(4, output_shape)
-        self.activation2 = sigmoid()
-        self.compiled = False
-
     def forward(self, X):
-        self.dense1.forward(X)
-        self.activation1.forward(self.dense1.outputs)
-
-        self.dense2.forward(self.activation1.outputs)
-        self.activation2.forward(self.dense2.outputs)
+        pass
     
     def backward(self, y):
-        self.loss.backward(self.activation2.outputs, y)
-        self.activation2.backward(self.loss.dinputs)
-        self.dense2.backward(self.activation2.dinputs)
-
-        self.activation1.backward(self.dense2.dinputs)
-        self.dense1.backward(self.activation1.dinputs)
+        pass
     
     def optimize(self):
-        self.optimizer.update_params(self.dense1)
-        self.optimizer.update_params(self.dense2)
-    
+        pass
+
     def train(self, X, y, epochs=10,validation_data=None, return_logs=False):
         if not self.compiled:
             raise RuntimeError("Model needs to be compiled")
@@ -75,7 +60,7 @@ class MLP(Model):
                     logs['val_acc'].append(val_acc)
                     logs['val_loss'].append(val_loss)
             print()
-            
+
         if return_logs:
             return logs
 
@@ -89,4 +74,34 @@ class MLP(Model):
         self.forward(X)
         prediction = np.argmax(self.activation2.outputs, axis=1)
         return prediction
+    
+
+class MLP(Model):
+    def __init__(self, input_shape, output_shape,):
+        self.dense1 = Dense(input_shape, 4)
+        self.activation1 = relu()
+        self.dense2 = Dense(4, output_shape)
+        self.activation2 = sigmoid()
+        self.compiled = False
+
+    def forward(self, X):
+        self.dense1.forward(X)
+        self.activation1.forward(self.dense1.outputs)
+
+        self.dense2.forward(self.activation1.outputs)
+        self.activation2.forward(self.dense2.outputs)
+    
+    def backward(self, y):
+        self.loss.backward(self.activation2.outputs, y)
+        self.activation2.backward(self.loss.dinputs)
+        self.dense2.backward(self.activation2.dinputs)
+
+        self.activation1.backward(self.dense2.dinputs)
+        self.dense1.backward(self.activation1.dinputs)
+    
+    def optimize(self):
+        self.optimizer.update_params(self.dense1)
+        self.optimizer.update_params(self.dense2)
+    
+    
     
